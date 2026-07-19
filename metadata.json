@@ -1,0 +1,6 @@
+{
+  "name": "Weather Intelligence",
+  "description": "Dynamic weather forecasts, city geocoding, and AI-powered planning recommendations for travel, outfit, and activities.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

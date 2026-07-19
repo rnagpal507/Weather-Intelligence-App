@@ -110,6 +110,54 @@ export default function App() {
     return () => clearTimeout(delayDebounce);
   }, [searchQuery]);
 
+  const triggerAIRecommendations = async (
+    city: CitySearchResult,
+    currentForecast: ForecastResponse,
+    targetUnit: "celsius" | "fahrenheit"
+  ) => {
+    setRecommendationsLoading(true);
+    setRecommendations(null);
+    setRecommendationsError(null);
+    setIsApiKeyMissing(false);
+
+    try {
+      const recRes = await fetch("/api/weather/recommendations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          city: `${city.name}, ${city.country}`,
+          current: currentForecast.current,
+          daily: currentForecast.daily,
+          unit: targetUnit,
+        }),
+      });
+
+      const contentType = recRes.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        if (recRes.status === 403) {
+          setIsApiKeyMissing(true);
+          return;
+        }
+        throw new Error(`Server returned an invalid response format (${recRes.status})`);
+      }
+
+      const recData = await recRes.json();
+
+      if (recRes.status === 403 || recData.error === "GEMINI_API_KEY_MISSING") {
+        setIsApiKeyMissing(true);
+      } else if (!recRes.ok || recData.error) {
+        throw new Error(recData.message || recData.error || "Failed to load AI recommendations");
+      } else {
+        setRecommendations(recData);
+      }
+    } catch (aiErr: any) {
+      console.error("Failed to load AI weather insights", aiErr);
+      setRecommendationsError(aiErr.message || "AI weather insights failed to load");
+    } finally {
+      setRecommendationsLoading(false);
+    }
+  };
+
   const handleCitySelection = async (city: CitySearchResult) => {
     setSelectedCity(city);
     setShowDropdown(false);
@@ -146,38 +194,7 @@ export default function App() {
       setForecastLoading(false);
 
       // Trigger Gemini Planning Recommendations in Parallel
-      setRecommendationsLoading(true);
-      try {
-        const recRes = await fetch("/api/weather/recommendations", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            city: `${city.name}, ${city.country}`,
-            current: processedForecast.current,
-            daily: processedForecast.daily,
-            unit,
-          }),
-        });
-
-        if (recRes.status === 403) {
-          const errData = await recRes.json();
-          if (errData.error === "GEMINI_API_KEY_MISSING") {
-            setIsApiKeyMissing(true);
-          } else {
-            throw new Error(errData.message || "Forbidden");
-          }
-        } else if (!recRes.ok) {
-          throw new Error("Unable to construct AI predictions");
-        } else {
-          const recData = await recRes.json();
-          setRecommendations(recData);
-        }
-      } catch (aiErr: any) {
-        console.error("Failed to load AI weather insights", aiErr);
-        setRecommendationsError(aiErr.message || "AI weather insights failed to load");
-      } finally {
-        setRecommendationsLoading(false);
-      }
+      triggerAIRecommendations(city, processedForecast, unit);
     } catch (err: any) {
       console.error("Forecast fetching failed", err);
       setForecastError(err.message || "Failed to load meteorological parameters");
@@ -208,49 +225,6 @@ export default function App() {
       if (selectedCity) {
         triggerAIRecommendations(selectedCity, updatedForecast, nextUnit);
       }
-    }
-  };
-
-  const triggerAIRecommendations = async (
-    city: CitySearchResult,
-    currentForecast: ForecastResponse,
-    targetUnit: "celsius" | "fahrenheit"
-  ) => {
-    setRecommendationsLoading(true);
-    setRecommendations(null);
-    setRecommendationsError(null);
-    setIsApiKeyMissing(false);
-
-    try {
-      const recRes = await fetch("/api/weather/recommendations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          city: `${city.name}, ${city.country}`,
-          current: currentForecast.current,
-          daily: currentForecast.daily,
-          unit: targetUnit,
-        }),
-      });
-
-      if (recRes.status === 403) {
-        const errData = await recRes.json();
-        if (errData.error === "GEMINI_API_KEY_MISSING") {
-          setIsApiKeyMissing(true);
-        } else {
-          throw new Error(errData.message || "Forbidden");
-        }
-      } else if (!recRes.ok) {
-        throw new Error("Failed to load AI recommendations");
-      } else {
-        const recData = await recRes.json();
-        setRecommendations(recData);
-      }
-    } catch (aiErr: any) {
-      console.error("Failed to reload AI insights", aiErr);
-      setRecommendationsError(aiErr.message || "AI weather insights failed to load");
-    } finally {
-      setRecommendationsLoading(false);
     }
   };
 
@@ -297,27 +271,72 @@ export default function App() {
   const atmosphereCode = forecast?.current.weather_code ?? 0;
   const currentAtmosphere = getWeatherDetails(atmosphereCode);
 
-  const getDynamicCardBg = (code: number) => {
-    if ([0, 1].includes(code)) return "bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 text-white shadow-xl shadow-amber-500/10";
-    if ([2, 3].includes(code)) return "bg-gradient-to-br from-slate-400 via-slate-500 to-indigo-600 text-white shadow-xl shadow-slate-500/10";
-    if ([45, 48].includes(code)) return "bg-gradient-to-br from-slate-300 via-slate-400 to-zinc-500 text-white shadow-xl shadow-zinc-400/10";
-    if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) {
-      return "bg-gradient-to-br from-sky-400 via-sky-500 to-blue-600 text-white shadow-xl shadow-sky-500/10";
-    }
-    if ([71, 73, 75, 77, 85, 86].includes(code)) {
-      return "bg-gradient-to-br from-teal-400 via-sky-400 to-cyan-500 text-white shadow-xl shadow-cyan-500/10";
-    }
-    if ([95, 96, 99].includes(code)) {
-      return "bg-gradient-to-br from-indigo-700 via-purple-800 to-slate-900 text-white shadow-xl shadow-purple-900/15";
-    }
-    return "bg-gradient-to-br from-sky-400 via-sky-500 to-indigo-500 text-white";
+  // Dynamic atmospheric background imagery
+  const getAtmosphereImage = (code: number) => {
+    if ([0, 1].includes(code)) return "/src/assets/images/weather_clear_sky_1784486176036.jpg";
+    if ([2, 3, 45, 48].includes(code)) return "/src/assets/images/weather_cloudy_sky_1784486190310.jpg";
+    if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return "/src/assets/images/weather_rainy_sky_1784486201919.jpg";
+    if ([71, 73, 75, 77, 85, 86].includes(code)) return "/src/assets/images/weather_snowy_sky_1784486213266.jpg";
+    if ([95, 96, 99].includes(code)) return "/src/assets/images/weather_stormy_sky_1784486224956.jpg";
+    return "/src/assets/images/weather_clear_sky_1784486176036.jpg";
   };
 
-  const dynamicCardBg = getDynamicCardBg(atmosphereCode);
+  // Dynamic pastel atmosphere body color mapping for a seamless experience
+  const getAtmosphereThemeColors = (code: number) => {
+    if ([0, 1].includes(code)) {
+      return {
+        bgGrad: "bg-radial from-amber-50/30 via-slate-50/90 to-slate-100/50",
+        brandBadge: "bg-amber-50 text-amber-700 border-amber-200/60",
+        accentText: "text-amber-600",
+        accentBg: "bg-amber-500",
+      };
+    }
+    if ([2, 3, 45, 48].includes(code)) {
+      return {
+        bgGrad: "bg-radial from-slate-100/50 via-slate-50 to-indigo-50/30",
+        brandBadge: "bg-slate-100 text-slate-700 border-slate-200",
+        accentText: "text-indigo-600",
+        accentBg: "bg-indigo-600",
+      };
+    }
+    if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) {
+      return {
+        bgGrad: "bg-radial from-sky-50/40 via-slate-50 to-blue-50/20",
+        brandBadge: "bg-sky-50 text-sky-700 border-sky-200/60",
+        accentText: "text-sky-600",
+        accentBg: "bg-sky-500",
+      };
+    }
+    if ([71, 73, 75, 77, 85, 86].includes(code)) {
+      return {
+        bgGrad: "bg-radial from-cyan-50/30 via-slate-50 to-sky-50/20",
+        brandBadge: "bg-cyan-50 text-cyan-700 border-cyan-200/60",
+        accentText: "text-cyan-600",
+        accentBg: "bg-cyan-500",
+      };
+    }
+    if ([95, 96, 99].includes(code)) {
+      return {
+        bgGrad: "bg-radial from-purple-50/30 via-slate-50 to-indigo-50/20",
+        brandBadge: "bg-purple-50 text-purple-700 border-purple-200/60",
+        accentText: "text-purple-600",
+        accentBg: "bg-purple-600",
+      };
+    }
+    return {
+      bgGrad: "bg-radial from-sky-50/30 via-slate-50 to-slate-100/50",
+      brandBadge: "bg-sky-50 text-sky-700 border-sky-200/60",
+      accentText: "text-sky-600",
+      accentBg: "bg-sky-500",
+    };
+  };
+
+  const atmosphereImage = getAtmosphereImage(atmosphereCode);
+  const themeColors = getAtmosphereThemeColors(atmosphereCode);
   const tempUnitChar = unit === "fahrenheit" ? "°F" : "°C";
 
   return (
-    <div className="min-h-screen bg-slate-50/50 text-slate-800 py-8 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className={`min-h-screen ${themeColors.bgGrad} text-slate-800 py-8 px-4 sm:px-6 lg:px-8 font-sans transition-all duration-500`}>
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* Core Header Brand */}
@@ -509,53 +528,58 @@ export default function App() {
               </div>
             ) : (
               <div className="space-y-6">
-                {/* Large Beautiful Atmospheric Card */}
-                <div className={`rounded-3xl p-6 ${dynamicCardBg} flex flex-col justify-between relative overflow-hidden transition-all duration-300`}>
+                {/* Large Beautiful Atmospheric Card with Dynamic Background Image */}
+                <div className="relative rounded-3xl p-6 min-h-[340px] flex flex-col justify-between overflow-hidden shadow-xl shadow-slate-900/10 hover:shadow-2xl hover:shadow-slate-950/15 transition-all duration-300">
                   
-                  {/* Backdrop Subtle design grids */}
-                  <div className="absolute right-0 top-0 translate-x-12 -translate-y-12 opacity-10 pointer-events-none">
-                    <WeatherIcon name={currentAtmosphere.icon} size={250} />
-                  </div>
+                  {/* Dynamic Weather Image Backdrop */}
+                  <img
+                    src={atmosphereImage}
+                    alt={currentAtmosphere.label}
+                    referrerPolicy="no-referrer"
+                    className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 hover:scale-105"
+                  />
+                  {/* Soft atmospheric gradient layer for crisp contrasting text */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-900/40 to-slate-900/50 z-5" />
 
                   {/* Header metadata row */}
                   <div className="flex justify-between items-start z-10">
                     <div className="space-y-0.5">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-sky-200 opacity-90 font-mono">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-sky-200 opacity-95 font-mono">
                         Current Atmosphere
                       </span>
-                      <h3 className="text-xl font-bold font-display tracking-tight flex items-center gap-1.5">
-                        <WeatherIcon name="MapPin" className="text-sky-200 shrink-0" size={16} />
+                      <h3 className="text-xl font-bold font-display tracking-tight flex items-center gap-1.5 text-white">
+                        <WeatherIcon name="MapPin" className="text-sky-300 shrink-0" size={16} />
                         {selectedCity.name}
                       </h3>
-                      <span className="text-[10px] text-white/70 block">
+                      <span className="text-[10px] text-slate-200 font-medium block">
                         {selectedCity.admin1 ? `${selectedCity.admin1}, ` : ""}{selectedCity.country}
                       </span>
                     </div>
 
-                    <div className="bg-white/15 backdrop-blur-md border border-white/10 py-1.5 px-3 rounded-2xl text-right shrink-0">
-                      <span className="text-[9px] font-bold font-mono tracking-widest block uppercase text-white/80">
+                    <div className="bg-white/10 backdrop-blur-md border border-white/20 py-1.5 px-3 rounded-2xl text-right shrink-0 text-white">
+                      <span className="text-[9px] font-bold font-mono tracking-widest block uppercase text-sky-200">
                         {forecast.timezone_abbreviation || "Local TZ"}
                       </span>
-                      <span className="text-[10px] font-semibold mt-0.5 block">
+                      <span className="text-[10px] font-bold mt-0.5 block">
                         {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                       </span>
                     </div>
                   </div>
 
                   {/* Center metrics reading */}
-                  <div className="my-8 flex items-baseline justify-between z-10">
+                  <div className="my-8 flex items-baseline justify-between z-10 text-white">
                     <div className="space-y-1">
                       <span className="text-6xl sm:text-7xl font-extrabold tracking-tighter block font-display">
                         {Math.round(forecast.current.temperature_2m)}
                         <span className="text-3xl sm:text-4xl font-light align-super">{tempUnitChar}</span>
                       </span>
-                      <span className="text-xs font-medium text-white/90 bg-white/15 px-3 py-1 rounded-full border border-white/10 backdrop-blur-sm inline-block">
+                      <span className="text-xs font-semibold text-slate-100 bg-black/30 px-3 py-1 rounded-full border border-white/10 backdrop-blur-sm inline-block">
                         Feels like {Math.round(forecast.current.apparent_temperature)}{tempUnitChar}
                       </span>
                     </div>
 
                     <div className="flex flex-col items-center shrink-0">
-                      <WeatherIcon name={currentAtmosphere.icon} className="text-white drop-shadow-md animate-bounce-slow" size={76} />
+                      <WeatherIcon name={currentAtmosphere.icon} className="text-amber-300 drop-shadow-md animate-bounce-slow" size={76} />
                       <span className="text-sm font-bold mt-2 font-display text-white">
                         {currentAtmosphere.label}
                       </span>
@@ -563,10 +587,10 @@ export default function App() {
                   </div>
 
                   {/* Footer minor meters */}
-                  <div className="grid grid-cols-3 gap-3 pt-4 border-t border-white/10 z-10 text-white/95">
+                  <div className="grid grid-cols-3 gap-3 pt-4 border-t border-white/10 z-10 text-slate-100">
                     
                     <div className="space-y-0.5">
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-white/75 font-mono block">
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-slate-300 font-mono block">
                         Relative Humidity
                       </span>
                       <p className="text-sm font-bold font-mono">
@@ -575,7 +599,7 @@ export default function App() {
                     </div>
 
                     <div className="space-y-0.5">
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-white/75 font-mono block">
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-slate-300 font-mono block">
                         Wind Currents
                       </span>
                       <p className="text-sm font-bold font-mono truncate">
@@ -587,7 +611,7 @@ export default function App() {
                     </div>
 
                     <div className="space-y-0.5">
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-white/75 font-mono block">
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-slate-300 font-mono block">
                         Cloud Coverage
                       </span>
                       <p className="text-sm font-bold font-mono">

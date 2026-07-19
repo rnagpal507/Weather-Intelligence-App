@@ -56,39 +56,39 @@ export function HourlyForecastSlider({ hourly, unit }: HourlyForecastSliderProps
         {next24Hours.map((hour, index) => (
           <div
             key={index}
-            className={`min-w-[85px] p-3.5 rounded-2xl flex flex-col items-center justify-between text-center transition-all ${
+            className={`min-w-[85px] p-3.5 rounded-2xl flex flex-col items-center justify-between text-center transition-all duration-300 ${
               index === 0
-                ? "bg-slate-900 text-white shadow-md shadow-slate-950/20 scale-105 z-10"
-                : "bg-slate-50 hover:bg-slate-100/70 border border-slate-100 text-slate-700"
+                ? "bg-gradient-to-br from-slate-900 to-slate-800 text-white shadow-lg shadow-slate-950/20 scale-105 z-10 border border-slate-700/50"
+                : `${hour.details.bgColor}/50 hover:${hour.details.bgColor}/80 border border-slate-200/40 text-slate-700 hover:scale-[1.03] hover:shadow-xs`
             }`}
           >
             {/* Hour Label */}
-            <span className={`text-[10px] font-semibold tracking-tight ${index === 0 ? "text-sky-300" : "text-slate-400"}`}>
+            <span className={`text-[10px] font-bold tracking-tight ${index === 0 ? "text-sky-300 uppercase" : "text-slate-400"}`}>
               {hour.hourLabel}
             </span>
 
             {/* Condition Icon */}
-            <div className="my-2.5">
+            <div className="my-2.5 transition-transform duration-300 group-hover:scale-110">
               <WeatherIcon
                 name={hour.details.icon}
-                className={index === 0 ? "text-amber-300" : hour.details.color}
+                className={index === 0 ? "text-amber-300 drop-shadow-[0_2px_8px_rgba(252,211,77,0.3)]" : hour.details.color}
                 size={22}
               />
             </div>
 
             {/* Temperature */}
             <div className="space-y-0.5">
-              <span className="text-sm font-bold tracking-tight">
+              <span className="text-sm font-extrabold tracking-tight">
                 {hour.temp}{tempUnit}
               </span>
-              <span className={`text-[9px] block ${index === 0 ? "text-slate-300" : "text-slate-400"}`}>
+              <span className={`text-[9px] font-medium block ${index === 0 ? "text-slate-300" : "text-slate-500"}`}>
                 Feels {hour.apparentTemp}°
               </span>
             </div>
 
             {/* Rain Probability */}
             {hour.precipProb > 0 && (
-              <span className={`text-[9px] font-mono font-medium mt-1.5 flex items-center gap-0.5 ${index === 0 ? "text-sky-200" : "text-sky-600"}`}>
+              <span className={`text-[9px] font-mono font-bold mt-1.5 flex items-center gap-0.5 ${index === 0 ? "text-sky-200" : "text-sky-600"}`}>
                 💧{hour.precipProb}%
               </span>
             )}

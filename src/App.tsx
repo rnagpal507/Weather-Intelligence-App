@@ -375,7 +375,7 @@ export default function App() {
           <div className="lg:col-span-5 space-y-6">
             
             {/* Dynamic Search Controller Box */}
-            <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm space-y-5" ref={dropdownRef}>
+            <div className="bg-white/85 backdrop-blur-md rounded-3xl border border-slate-200/50 p-6 shadow-md shadow-slate-100/40 space-y-5" ref={dropdownRef}>
               <div className="space-y-1">
                 <h2 className="text-sm font-semibold font-display text-slate-900">
                   Select Location
@@ -624,7 +624,7 @@ export default function App() {
                 </div>
 
                 {/* 24-hour Slider Slider */}
-                <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+                <div className="bg-white/85 backdrop-blur-md rounded-3xl border border-slate-200/50 p-6 shadow-md shadow-slate-100/40">
                   <HourlyForecastSlider hourly={forecast.hourly} unit={unit} />
                 </div>
               </div>

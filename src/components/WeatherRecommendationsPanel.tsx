@@ -214,15 +214,15 @@ export function WeatherRecommendationsPanel({
       )}
 
       {/* Main Container */}
-      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+      <div className="bg-white/90 backdrop-blur-md rounded-3xl border border-slate-200/50 shadow-md shadow-slate-100/40 overflow-hidden">
         {/* Header Tabs */}
-        <div className="flex border-b border-slate-100 overflow-x-auto no-scrollbar bg-slate-50/50">
+        <div className="flex border-b border-slate-100 overflow-x-auto no-scrollbar bg-slate-50/35">
           <button
             onClick={() => setActiveTab("outfit")}
-            className={`flex-1 min-w-[120px] py-4 px-5 text-center font-display font-medium text-xs tracking-tight border-b-2 transition-all flex items-center justify-center gap-2 ${
+            className={`flex-1 min-w-[120px] py-4 px-5 text-center font-display font-bold text-xs tracking-tight border-b-2 transition-all flex items-center justify-center gap-2 ${
               activeTab === "outfit"
-                ? "border-sky-500 text-sky-600 bg-white"
-                : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/50"
+                ? "border-sky-500 text-sky-600 bg-white/90 font-extrabold"
+                : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/40"
             }`}
           >
             <WeatherIcon name="Shirt" size={14} />
@@ -230,10 +230,10 @@ export function WeatherRecommendationsPanel({
           </button>
           <button
             onClick={() => setActiveTab("activities")}
-            className={`flex-1 min-w-[120px] py-4 px-5 text-center font-display font-medium text-xs tracking-tight border-b-2 transition-all flex items-center justify-center gap-2 ${
+            className={`flex-1 min-w-[120px] py-4 px-5 text-center font-display font-bold text-xs tracking-tight border-b-2 transition-all flex items-center justify-center gap-2 ${
               activeTab === "activities"
-                ? "border-sky-500 text-sky-600 bg-white"
-                : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/50"
+                ? "border-sky-500 text-sky-600 bg-white/90 font-extrabold"
+                : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/40"
             }`}
           >
             <WeatherIcon name="Activity" size={14} />
@@ -241,10 +241,10 @@ export function WeatherRecommendationsPanel({
           </button>
           <button
             onClick={() => setActiveTab("packing")}
-            className={`flex-1 min-w-[120px] py-4 px-5 text-center font-display font-medium text-xs tracking-tight border-b-2 transition-all flex items-center justify-center gap-2 ${
+            className={`flex-1 min-w-[120px] py-4 px-5 text-center font-display font-bold text-xs tracking-tight border-b-2 transition-all flex items-center justify-center gap-2 ${
               activeTab === "packing"
-                ? "border-sky-500 text-sky-600 bg-white"
-                : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/50"
+                ? "border-sky-500 text-sky-600 bg-white/90 font-extrabold"
+                : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/40"
             }`}
           >
             <WeatherIcon name="Briefcase" size={14} />
@@ -252,10 +252,10 @@ export function WeatherRecommendationsPanel({
           </button>
           <button
             onClick={() => setActiveTab("weekly")}
-            className={`flex-1 min-w-[120px] py-4 px-5 text-center font-display font-medium text-xs tracking-tight border-b-2 transition-all flex items-center justify-center gap-2 ${
+            className={`flex-1 min-w-[120px] py-4 px-5 text-center font-display font-bold text-xs tracking-tight border-b-2 transition-all flex items-center justify-center gap-2 ${
               activeTab === "weekly"
-                ? "border-sky-500 text-sky-600 bg-white"
-                : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/50"
+                ? "border-sky-500 text-sky-600 bg-white/90 font-extrabold"
+                : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/40"
             }`}
           >
             <WeatherIcon name="CheckCircle2" size={14} />
@@ -277,8 +277,8 @@ export function WeatherRecommendationsPanel({
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Core & Layers */}
-                  <div className="space-y-3 p-4 bg-slate-50/50 rounded-2xl border border-slate-100/50">
-                    <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400 font-mono block">
+                  <div className="space-y-3 p-4.5 bg-sky-50/40 hover:bg-sky-50/70 rounded-2xl border border-sky-100/50 shadow-xs transition-all duration-300">
+                    <span className="text-[10px] uppercase font-bold tracking-widest text-sky-700/80 font-mono block">
                       Clothing Layers
                     </span>
                     <div className="space-y-2">
@@ -286,18 +286,18 @@ export function WeatherRecommendationsPanel({
                         {displayData.outfitPlanner.coreClothing.map((item, i) => (
                           <span
                             key={i}
-                            className="text-xs px-2.5 py-1 bg-white rounded-lg text-slate-700 font-medium border border-slate-100 shadow-xs"
+                            className="text-xs px-2.5 py-1 bg-white rounded-lg text-slate-700 font-bold border border-slate-100 shadow-xs"
                           >
                             👕 {item}
                           </span>
                         ))}
                       </div>
                       {displayData.outfitPlanner.layers.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-dashed border-slate-200">
+                        <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-dashed border-sky-200/60">
                           {displayData.outfitPlanner.layers.map((item, i) => (
                             <span
                               key={i}
-                              className="text-xs px-2.5 py-1 bg-sky-50 text-sky-700 rounded-lg font-medium border border-sky-100/50"
+                              className="text-xs px-2.5 py-1 bg-sky-100/60 text-sky-800 rounded-lg font-bold border border-sky-200/40"
                             >
                               🧥 Layer: {item}
                             </span>
@@ -308,8 +308,8 @@ export function WeatherRecommendationsPanel({
                   </div>
 
                   {/* Footwear & Accessories */}
-                  <div className="space-y-3 p-4 bg-slate-50/50 rounded-2xl border border-slate-100/50">
-                    <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400 font-mono block">
+                  <div className="space-y-3 p-4.5 bg-amber-50/40 hover:bg-amber-50/70 rounded-2xl border border-amber-100/50 shadow-xs transition-all duration-300">
+                    <span className="text-[10px] uppercase font-bold tracking-widest text-amber-700/80 font-mono block">
                       Footwear & Accessories
                     </span>
                     <div className="space-y-2">
@@ -317,18 +317,18 @@ export function WeatherRecommendationsPanel({
                         {displayData.outfitPlanner.footwear.map((item, i) => (
                           <span
                             key={i}
-                            className="text-xs px-2.5 py-1 bg-white rounded-lg text-slate-700 font-medium border border-slate-100 shadow-xs"
+                            className="text-xs px-2.5 py-1 bg-white rounded-lg text-slate-700 font-bold border border-slate-100 shadow-xs"
                           >
                             👟 {item}
                           </span>
                         ))}
                       </div>
                       {displayData.outfitPlanner.accessories.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-dashed border-slate-200">
+                        <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-dashed border-amber-200/60">
                           {displayData.outfitPlanner.accessories.map((item, i) => (
                             <span
                               key={i}
-                              className="text-xs px-2.5 py-1 bg-amber-50 text-amber-700 rounded-lg font-medium border border-amber-100/50"
+                              className="text-xs px-2.5 py-1 bg-amber-100/60 text-amber-800 rounded-lg font-bold border border-amber-200/40"
                             >
                               👓 {item}
                             </span>
@@ -339,15 +339,15 @@ export function WeatherRecommendationsPanel({
                   </div>
                 </div>
 
-                <div className="p-4 bg-sky-50/30 rounded-2xl border border-sky-100/50 flex items-start gap-2.5">
-                  <div className="text-sky-500 mt-0.5">
+                <div className="p-4.5 bg-gradient-to-r from-violet-50/50 to-indigo-50/50 rounded-2xl border border-violet-100/60 flex items-start gap-2.5 shadow-xs">
+                  <div className="text-violet-500 mt-0.5 animate-pulse">
                     <WeatherIcon name="Sparkles" size={16} />
                   </div>
                   <div>
-                    <span className="text-[11px] font-bold text-sky-800 uppercase tracking-wider font-display block">
+                    <span className="text-[11px] font-extrabold text-violet-800 uppercase tracking-wider font-display block">
                       Style Tip
                     </span>
-                    <p className="text-xs text-sky-900/80 leading-relaxed mt-0.5">
+                    <p className="text-xs text-violet-950/80 leading-relaxed mt-0.5 font-medium">
                       {displayData.outfitPlanner.tip}
                     </p>
                   </div>
@@ -366,10 +366,17 @@ export function WeatherRecommendationsPanel({
               >
                 {displayData.activities.map((activity, index) => {
                   const ratingColors = {
-                    Excellent: "bg-emerald-50 text-emerald-700 border-emerald-100",
-                    Good: "bg-teal-50 text-teal-700 border-teal-100",
-                    Fair: "bg-amber-50 text-amber-700 border-amber-100",
-                    Poor: "bg-rose-50 text-rose-700 border-rose-100",
+                    Excellent: "bg-emerald-50 text-emerald-700 border-emerald-200/60",
+                    Good: "bg-teal-50 text-teal-700 border-teal-200/60",
+                    Fair: "bg-amber-50 text-amber-700 border-amber-200/60",
+                    Poor: "bg-rose-50 text-rose-700 border-rose-200/60",
+                  };
+
+                  const tileColors = {
+                    Excellent: "bg-emerald-50/20 hover:bg-emerald-50/45 border-emerald-100/50 text-emerald-950",
+                    Good: "bg-teal-50/20 hover:bg-teal-50/45 border-teal-100/50 text-teal-950",
+                    Fair: "bg-amber-50/20 hover:bg-amber-50/45 border-amber-100/50 text-amber-950",
+                    Poor: "bg-rose-50/20 hover:bg-rose-50/45 border-rose-100/50 text-rose-950",
                   };
 
                   const ratingTextColors = {
@@ -382,22 +389,24 @@ export function WeatherRecommendationsPanel({
                   return (
                     <div
                       key={index}
-                      className="p-4 bg-slate-50/50 hover:bg-slate-50 rounded-2xl border border-slate-100 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-3"
+                      className={`p-4 rounded-2xl border transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-3 ${
+                        tileColors[activity.rating] || "bg-slate-50/30 border-slate-100/70"
+                      }`}
                     >
                       <div className="space-y-1 max-w-xl">
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold text-sm text-slate-800 font-display">
+                          <span className="font-bold text-sm text-slate-800 font-display">
                             {activity.name}
                           </span>
                           <span
                             className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                              ratingColors[activity.rating] || "bg-slate-100 text-slate-600"
+                              ratingColors[activity.rating] || "bg-slate-100 text-slate-600 border-slate-200"
                             }`}
                           >
                             {activity.rating}
                           </span>
                         </div>
-                        <p className="text-xs text-slate-500 leading-relaxed">
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">
                           {activity.reason}
                         </p>
                       </div>
@@ -406,7 +415,7 @@ export function WeatherRecommendationsPanel({
                         <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 font-mono">
                           Optimal:
                         </span>
-                        <span className="text-xs bg-white py-1 px-2.5 rounded-lg border border-slate-100 text-slate-600 font-medium">
+                        <span className="text-xs bg-white py-1 px-2.5 rounded-lg border border-slate-100 text-slate-700 font-bold shadow-xs">
                           🕒 {activity.bestTime}
                         </span>
                       </div>
@@ -427,12 +436,12 @@ export function WeatherRecommendationsPanel({
               >
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {/* Essential */}
-                  <div className="p-4 rounded-2xl bg-rose-50/20 border border-rose-100/50 space-y-3">
-                    <div className="flex items-center justify-between border-b border-rose-100/50 pb-2">
+                  <div className="p-4.5 rounded-2xl bg-rose-50/30 hover:bg-rose-50/50 border border-rose-100/70 space-y-3 transition-all duration-300 shadow-xs">
+                    <div className="flex items-center justify-between border-b border-rose-100/60 pb-2">
                       <span className="text-xs font-bold text-rose-800 font-display flex items-center gap-1.5">
                         🚨 Essential
                       </span>
-                      <span className="text-[10px] bg-rose-100 text-rose-700 font-bold px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] bg-white border border-rose-100 text-rose-700 font-bold px-2 py-0.5 rounded-full">
                         Must Bring
                       </span>
                     </div>
@@ -443,8 +452,8 @@ export function WeatherRecommendationsPanel({
                           <li key={i} className="flex items-start gap-2 text-xs text-slate-700">
                             <span className="text-rose-500 font-bold">✓</span>
                             <div>
-                              <p className="font-medium text-slate-800">{p.item}</p>
-                              <span className="text-[9px] font-mono text-slate-400 uppercase">
+                              <p className="font-bold text-slate-800">{p.item}</p>
+                              <span className="text-[9px] font-mono text-slate-400 uppercase font-bold">
                                 {p.category}
                               </span>
                             </div>
@@ -457,13 +466,13 @@ export function WeatherRecommendationsPanel({
                   </div>
 
                   {/* Recommended */}
-                  <div className="p-4 rounded-2xl bg-sky-50/20 border border-sky-100/50 space-y-3">
-                    <div className="flex items-center justify-between border-b border-sky-100/50 pb-2">
+                  <div className="p-4.5 rounded-2xl bg-sky-50/30 hover:bg-sky-50/50 border border-sky-100/70 space-y-3 transition-all duration-300 shadow-xs">
+                    <div className="flex items-center justify-between border-b border-sky-100/60 pb-2">
                       <span className="text-xs font-bold text-sky-800 font-display flex items-center gap-1.5">
                         ⭐ Recommended
                       </span>
-                      <span className="text-[10px] bg-sky-100 text-sky-700 font-bold px-2 py-0.5 rounded-full">
-                        Better comfort
+                      <span className="text-[10px] bg-white border border-sky-100 text-sky-700 font-bold px-2 py-0.5 rounded-full">
+                        More Comfort
                       </span>
                     </div>
                     <ul className="space-y-2">
@@ -473,8 +482,8 @@ export function WeatherRecommendationsPanel({
                           <li key={i} className="flex items-start gap-2 text-xs text-slate-700">
                             <span className="text-sky-500 font-bold">✓</span>
                             <div>
-                              <p className="font-medium text-slate-800">{p.item}</p>
-                              <span className="text-[9px] font-mono text-slate-400 uppercase">
+                              <p className="font-bold text-slate-800">{p.item}</p>
+                              <span className="text-[9px] font-mono text-slate-400 uppercase font-bold">
                                 {p.category}
                               </span>
                             </div>
@@ -487,13 +496,13 @@ export function WeatherRecommendationsPanel({
                   </div>
 
                   {/* Optional */}
-                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-3">
-                    <div className="flex items-center justify-between border-b border-slate-200/60 pb-2">
-                      <span className="text-xs font-bold text-slate-700 font-display flex items-center gap-1.5">
+                  <div className="p-4.5 rounded-2xl bg-indigo-50/20 hover:bg-indigo-50/40 border border-indigo-100/40 space-y-3 transition-all duration-300 shadow-xs">
+                    <div className="flex items-center justify-between border-b border-indigo-100/40 pb-2">
+                      <span className="text-xs font-bold text-indigo-800 font-display flex items-center gap-1.5">
                         🎒 Optional
                       </span>
-                      <span className="text-[10px] bg-slate-200 text-slate-600 font-bold px-2 py-0.5 rounded-full">
-                        Extra leisure
+                      <span className="text-[10px] bg-white border border-indigo-100 text-indigo-700 font-bold px-2 py-0.5 rounded-full">
+                        Extra Leisure
                       </span>
                     </div>
                     <ul className="space-y-2">
@@ -501,10 +510,10 @@ export function WeatherRecommendationsPanel({
                         .filter((p) => p.necessity === "Optional" || p.necessity === undefined)
                         .map((p, i) => (
                           <li key={i} className="flex items-start gap-2 text-xs text-slate-700">
-                            <span className="text-slate-400 font-bold">✓</span>
+                            <span className="text-indigo-400 font-bold">✓</span>
                             <div>
-                              <p className="font-medium text-slate-800">{p.item}</p>
-                              <span className="text-[9px] font-mono text-slate-400 uppercase">
+                              <p className="font-bold text-slate-800">{p.item}</p>
+                              <span className="text-[9px] font-mono text-slate-400 uppercase font-bold">
                                 {p.category}
                               </span>
                             </div>
@@ -537,21 +546,31 @@ export function WeatherRecommendationsPanel({
                       chill: "bg-sky-50 text-sky-700 border-sky-100",
                     };
 
+                    const cardStyles: Record<string, string> = {
+                      adventure: "bg-emerald-50/15 hover:bg-emerald-50/35 border-emerald-100/50",
+                      caution: "bg-rose-50/15 hover:bg-rose-50/35 border-rose-100/50",
+                      indoor: "bg-indigo-50/15 hover:bg-indigo-50/35 border-indigo-100/50",
+                      chill: "bg-sky-50/15 hover:bg-sky-50/35 border-sky-100/50",
+                    };
+
                     return (
                       <div
                         key={idx}
-                        className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-slate-50/50 border border-slate-100"
+                        className={`flex items-center justify-between gap-4 p-4 rounded-2xl border transition-all duration-300 ${
+                          cardStyles[highlight.type.toLowerCase()] ||
+                          "bg-slate-50/30 hover:bg-slate-50/50 border-slate-100"
+                        }`}
                       >
                         <div className="flex items-center gap-3">
                           <span className="w-16 shrink-0 text-xs font-bold text-slate-400 uppercase tracking-wider font-mono">
                             {highlight.day}
                           </span>
-                          <p className="text-xs font-medium text-slate-700">
+                          <p className="text-xs font-bold text-slate-700">
                             {highlight.headline}
                           </p>
                         </div>
                         <span
-                          className={`text-[9px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-md border ${
+                          className={`text-[9px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-md border shrink-0 ${
                             tagStyles[highlight.type.toLowerCase()] ||
                             "bg-slate-100 text-slate-600 border-slate-200"
                           }`}
